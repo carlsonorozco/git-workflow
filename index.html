@@ -1,0 +1,358 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Git Workflow</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>Git Workflow</h1>
+				</section>
+				<section>
+					<section>
+						<h2>What is Git Workflow?</h2>
+					</section>
+					<section>
+						<p><strong>Git Workflow</strong> is a recommendation on how to use Git to accomplish work in a consistent and productive manner.</p>
+						<aside class="notes">
+							<ul>
+								<li>Git offers a lot of flexibility in how users manage changes</li>
+								<li>Given Git's focus on flexibility, there is no standardized process on how to interact with Git</li>
+								<li></li>
+							</ul>
+							<p>
+								When working with a team on a Git managed project, it’s important to make sure the team is all in agreement on how the flow of changes will be applied. To ensure the team is on the same page, an agreed upon Git workflow should be developed or selected.
+							</p>
+						</aside>
+					</section>
+					<section>
+						<h3>Some things to consider when evaluating a Git workflow are:</h3>
+						<ul>
+							<li class="fragment">Does this workflow scale with team size?</li>
+							<li class="fragment">Is it easy to undo mistakes and errors with this workflow?</li>
+							<li class="fragment">Does this workflow impose any new unnecessary cognitive overhead to the team?</li>
+						</ul>
+						<aside class="notes">
+							<p>When evaluating a workflow for your team, it's most important that you consider your team’s culture. You want the workflow to enhance the effectiveness of your team and not be a burden that limits productivity.</p>
+						</aside>
+					</section>
+				</section>
+				<section>
+					<h3>Types of workflows</h3>
+					<ul>
+						<li class="fragment">Centralized Workflow</li>
+						<li class="fragment">Feature Branch Workflow</li>
+						<li class="fragment">Gitflow Workflow</li>
+						<li class="fragment">Forking Workflow</li>
+					</ul>
+				</section>
+				<!-- Centralized Workflow -->
+				<section>
+					<section>
+						<h2>Centralized Workflow</h2>
+					</section>
+					<section>
+						<p>The <strong>Centralized Workflow</strong> is a great Git workflow for teams transitioning from SVN. Like Subversion, the Centralized Workflow uses a central repository to serve as the single point-of-entry for all changes to the project.</p>
+						<aside class="notes">
+							<p>Instead of trunk, the default development branch is called master and all changes are committed into this branch. This workflow doesn’t require any other branches besides master.</p>
+							<p>Transitioning to a distributed version control system may seem like a daunting task, but you don’t have to change your existing workflow to take advantage of Git. Your team can develop projects in the exact same way as they do with Subversion.</p>
+							<p>However, using Git to power your development workflow presents a few advantages over SVN. First, it gives every developer their own local copy of the entire project. This isolated environment lets each developer work independently of all other changes to a project - they can add commits to their local repository and completely forget about upstream developments until it's convenient for them.</p>
+							<p>Second, it gives you access to Git’s robust branching and merging model. Unlike SVN, Git branches are designed to be a fail-safe mechanism for integrating code and sharing changes between repositories. The Centralized Workflow is similar to other workflows in its utilization of a remote server-side hosted repository that developers push and pull form. Compared to other workflows, the Centralized Workflow has no defined pull request or forking patterns. A Centralized Workflow is generally better suited for teams migrating from SVN to Git and smaller size teams.</p>
+						</aside>
+					</section>
+					<section data-background="images/centralized_workflow_01.svg">
+						<h2>How it works?</h2>
+					</section>
+					<section>
+						<img class="stretch" src="images/centralized_workflow_02.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>First, someone needs to create the central repository on a server. If it’s a new project, you can initialize an empty repository. Otherwise, you’ll need to import an existing Git or SVN repository.</p>
+							<p>Central repositories should always be bare repositories (they shouldn’t have a working directory), which can be created as follows: ssh user@host git init --bare /path/to/repo.git</p>
+						</aside>
+					</section>
+					<section>
+						<h3>Hosted central repositories</h3>
+						<p>Central repositories are often created through 3rd party Git hosting services like Gitlab, Github, Bitbucket, etc.</p>
+					</section>
+					<section>
+						<h3>Clone the central repository</h3>
+						<p>git clone ssh://user@host/path/to/repo.git</p>
+					</section>
+					<section>
+						<h3>Make changes and commit</h3>
+						<pre><code data-trim data-noescape>
+							git status # View the state of the repo
+							git add <some-file> # Stage a file
+							git commit # Commit a file</some-file>
+						</code></pre>
+					</section>
+					<section>
+						<h3>Push new commits to central repository</h3>
+						<pre><code data-trim data-noescape>
+							git push origin master
+						</code></pre>
+					</section>
+					<section>
+						<h3>Managing conflicts</h3>
+						<img class="stretch" src="images/centralized_workflow_03.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+					</section>
+					<section>
+						 <h3>Example</h3>
+					</section>
+					<section>
+						<h3>John works on his feature</h3>
+						<img class="stretch" src="images/centralized_workflow_04.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>In his local repository, John can develop features using the standard Git commit process: edit, stage, and commit.</p>
+							<p>Remember that since these commands create local commits, John can repeat this process as many times as he wants without worrying about what’s going on in the central repository.</p>
+						</aside>
+					</section>
+					<section>
+						<h3>Mary works on her feature</h3>
+						<img class="stretch" src="images/centralized_workflow_05.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>Meanwhile, Mary is working on her own feature in her own local repository using the same edit/stage/commit process. Like John, she doesn’t care what’s going on in the central repository, and she really doesn’t care what John is doing in his local repository, since all local repositories are private.</p>
+						</aside>
+					</section>
+					<section>
+						<h3>John publishes his feature</h3>
+						<img class="stretch" src="images/centralized_workflow_06.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>Once John finishes his feature, he should publish his local commits to the central repository so other team members can access it. He can do this with the git push command, like so: git push origin master</p>
+						</aside>
+					</section>
+					<section>
+						<h3>Mary tries to publish her feature</h3>
+						<img class="stretch" src="images/centralized_workflow_07.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>Let’s see what happens if Mary tries to push her feature after John has successfully published his changes to the central repository. She can use the exact same push command: git push origin master</p>
+							<p>But, since her local history has diverged from the central repository, Git will refuse the request with a rather verbose error message:</p>
+							<pre><code data-trim data-noescape>
+								error: failed to push some refs to '/path/to/repo.git'
+								hint: Updates were rejected because the tip of your current branch is behind
+								hint: its remote counterpart. Merge the remote changes (e.g. 'git pull')
+								hint: before pushing again.
+								hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+							</code></pre>
+							<p>This prevents Mary from overwriting official commits. She needs to pull John’s updates into her repository, integrate them with her local changes, and then try again.</p>
+						</aside>
+					</section>
+					<section>
+						<h3>Mary rebases on top of John’s commit(s)</h3>
+						<img class="stretch" src="images/centralized_workflow_08.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>Mary can use git pull to incorporate upstream changes into her repository. This command is sort of like svn update—it pulls the entire upstream commit history into Mary’s local repository and tries to integrate it with her local commits: git pull --rebase origin master</p>
+						</aside>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							git pull --rebase origin master
+						</code></pre>
+					</section>
+					<section>
+						<img class="stretch" src="images/centralized_workflow_09.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>The --rebase option tells Git to move all of Mary’s commits to the tip of the master branch after synchronising it with the changes from the central repository, as shown below:</p>
+							<p>The pull would still work if you forgot this option, but you would wind up with a superfluous “merge commit” every time someone needed to synchronize with the central repository. For this workflow, it’s always better to rebase instead of generating a merge commit.</p>
+						</aside>
+					</section>
+					<section>
+						<h3>Mary resolves a merge conflict</h3>
+						<img class="stretch" src="images/centralized_workflow_10.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>Rebasing works by transferring each local commit to the updated master branch one at a time. This means that you catch merge conflicts on a commit-by-commit basis rather than resolving all of them in one massive merge commit. This keeps your commits as focused as possible and makes for a clean project history. In turn, this makes it much easier to figure out where bugs were introduced and, if necessary, to roll back changes with minimal impact on the project.</p>
+							<p>If Mary and John are working on unrelated features, it’s unlikely that the rebasing process will generate conflicts. But if it does, Git will pause the rebase at the current commit and output the following message, along with some relevant instructions:</p>
+						</aside>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							CONFLICT (content): Merge conflict in <some-file>
+						</code></pre>
+					</section>
+					<section>
+						<img class="stretch" src="images/centralized_workflow_11.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>The great thing about Git is that anyone can resolve their own merge conflicts. In our example, Mary would simply run a git status to see where the problem is. Conflicted files will appear in the Unmerged paths section:</p>
+						</aside>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							# Unmerged paths:
+							# (use "git reset HEAD <some-file>..." to unstage)
+							# (use "git add/rm <some-file>..." as appropriate to mark resolution)
+							#
+							# both modified: <some-file>
+						</code></pre>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							git add <some-file>
+							git rebase --continue
+						</code></pre>
+						<aside class="notes">
+							<p>Then, she’ll edit the file(s) to her liking. Once she’s happy with the result, she can stage the file(s) in the usual fashion and let git rebase do the rest:</p>
+							<p>And that’s all there is to it. Git will move on to the next commit and repeat the process for any other commits that generate conflicts.</p>
+						</aside>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							git rebase --abort
+						</code></pre>
+						<aside class="notes">
+							<p>If you get to this point and realize and you have no idea what’s going on, don’t panic. Just execute the following command and you’ll be right back to where you started:</p>
+						</aside>
+					</section>
+					<section>
+						<h3>Mary rebases on top of John’s commit(s)</h3>
+						<img class="stretch" src="images/centralized_workflow_12.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+						<aside class="notes">
+							<p>After she’s done synchronizing with the central repository, Mary will be able to publish her changes successfully: git push origin master</p>
+						</aside>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							git push origin master
+						</code></pre>
+					</section>
+					<section>
+						<p>The <strong>Centralized Workflow</strong> is great for small teams. The conflict resolution process detailed above can form a bottleneck as your team scales in size.</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Gitflow Workflow</h2>
+					</section>
+					<section>
+						<p><strong>Gitflow Workflow</strong> is a Git workflow design that was first published and made popular by Vincent Driessen at nvie. The Gitflow Workflow defines a strict branching model designed around the project release. This provides a robust framework for managing larger projects.</p>
+						<aside class="notes">
+							<p>Gitflow is ideally suited for projects that have a scheduled release cycle.</p>
+							<p></p>
+						</aside>
+					</section>
+					<section>
+						<h2>How it works?</h2>
+					</section>
+					<section>
+						<img class="stretch" src="images/gitflow_workflow_01.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							git branch develop
+							git push -u origin develop
+						</code></pre>
+					</section>
+					<section>
+						<h3>Feature Branches</h3>
+						<img class="stretch" src="images/gitflow_workflow_02.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+					</section>
+					<section>
+						<h3>Creating a feature branch</h3>
+						<pre><code data-trim data-noescape>
+							git checkout develop
+							git checkout -b feature_branch
+						</code></pre>
+					</section>
+					<section>
+						<h3>Finishing a feature branch</h3>
+						<pre><code data-trim data-noescape>
+							git checkout develop
+							git merge feature_branch
+						</code></pre>
+					</section>
+					<section>
+						<h3>Release Branches</h3>
+						<img class="stretch" src="images/gitflow_workflow_03.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							git checkout develop
+							git checkout -b release-0.1.0
+						</code></pre>
+					</section>
+					<section>
+						<h3>Hotfix Branches</h3>
+						<img class="stretch" src="images/gitflow_workflow_04.svg" alt=""  style="background: none; box-shadow: none; border: none;">
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							git checkout master
+							git checkout -b hotfix_branch
+						</code></pre>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							git checkout master
+							git merge hotfix_branch
+							git checkout develop
+							git merge hotfix_branch
+							git branch -D hotfix_branch
+						</code></pre>
+						<aside class="notes">
+							<p>Similar to finishing a release branch, a hotfix branch gets merged into both master and develop.</p>
+						</aside>
+					</section>
+					<section>
+						<h3>Takeaways to know about Gitflow are:</h3>
+						<ul>
+							<li class="fragment">The workflow is great for a release-based software workflow.</li>
+							<li class="fragment">Gitflow offers a dedicated channel for hotfixes to production.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>The overall flow of Gitflow is:</h3>
+						<ol>
+							<li class="fragment">A <strong>develop</strong> branch is created from <strong>master</strong></li>
+							<li class="fragment">A <strong>release</strong> branch is created from <strong>develop</strong></li>
+							<li class="fragment"><strong>feature</strong> branches are created from <strong>develop</strong></li>
+							<li class="fragment">When a <strong>feature</strong> is complete it is merged into the <strong>develop</strong> branch</li>
+							<li class="fragment">When the <strong>release</strong> branch is done it is merged into <strong>develop</strong> and <strong>master</strong></li>
+							<li class="fragment">If an issue in <strong>master</strong> is detected a <strong>hotfix</strong> branch is created from <strong>master</strong></li>
+							<li class="fragment">Once the <strong>hotfix</strong> is complete it is merged to both <strong>develop</strong> and <strong>master</strong></li>
+						</ol>
+					</section>
+				</section>
+				<section>
+					<img class="stretch" src="images/question.jpg" alt=""  style="background: none; box-shadow: none; border: none;">
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				transition: 'convex',
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
